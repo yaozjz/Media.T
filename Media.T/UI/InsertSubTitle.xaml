@@ -11,6 +11,7 @@
     <DockPanel Margin=" 10 0 10 0" Background="White">
         <StackPanel DockPanel.Dock="Top">
             <TextBlock Text="字幕嵌入（仅限mkv格式）" Style="{StaticResource Title}"/>
+            <TextBlock Text="请确认视频的命名与字幕文件命名一致（不包括后缀名），否则会导致视频合成失败(另：目前仅支持mkv格式)" Style="{StaticResource Text}" Foreground="Red"/>
             <StackPanel Orientation="Horizontal" Margin="5">
                 <TextBlock Text="视频输入文件夹：" Style="{StaticResource Text}"/>
                 <TextBox x:Name="InputPath" VerticalAlignment="Center" Width="400" Height="24"/>
