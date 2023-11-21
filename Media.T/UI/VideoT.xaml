@@ -1,0 +1,84 @@
+﻿<Page x:Class="Media.T.UI.VideoT"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Media.T.UI"
+      mc:Ignorable="d" 
+      d:DesignHeight="640" d:DesignWidth="1000"
+      Title="VideoT">
+
+    <DockPanel LastChildFill="True" Margin="10 0 10 0" Background="White">
+        <TextBlock DockPanel.Dock="Top" Text="使用硬件解码时请确认设备是否支持" Style="{StaticResource Text}" Foreground="Red"/>
+        <UniformGrid Columns="3" DockPanel.Dock="Top">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="解码器：" Style="{StaticResource Text}"/>
+                <ComboBox x:Name="Decodes" Width="200" VerticalAlignment="Center">
+                    <ComboBoxItem IsSelected="True">软件解码</ComboBoxItem>
+                    <ComboBoxItem>N卡解码（NVEnc）</ComboBoxItem>
+                    <ComboBoxItem>Intel解码（qsv）（核显也支持）</ComboBoxItem>
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="编码器：" Style="{StaticResource Text}"/>
+                <ComboBox x:Name="Encodes" Width="200" VerticalAlignment="Center">
+                    <ComboBoxItem IsSelected="True">软件编码</ComboBoxItem>
+                    <ComboBoxItem>N卡编码（NVEnc）</ComboBoxItem>
+                    <ComboBoxItem>Intel编码（qsv）（核显也支持）</ComboBoxItem>
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <ComboBox x:Name="EncodeMod" Width="150" VerticalAlignment="Center">
+                    <ComboBoxItem IsSelected="True">固定质量</ComboBoxItem>
+                    <ComboBoxItem>量化器</ComboBoxItem>
+                    <ComboBoxItem>比特率</ComboBoxItem>
+                </ComboBox>
+                <TextBox x:Name="EncodeModNum" Width="100" Margin="10 0 5 0" VerticalAlignment="Center" FontSize="13" Text="19"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="编码器：" Style="{StaticResource Text}"/>
+                <ComboBox x:Name="Profile" Width="200" VerticalAlignment="Center">
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="预设：" Style="{StaticResource Text}"/>
+                <ComboBox x:Name="Preset" Width="200" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="调整：" Style="{StaticResource Text}"/>
+                <ComboBox x:Name="Tune" Width="200" VerticalAlignment="Center"/>
+            </StackPanel>
+        </UniformGrid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="7*" MinHeight="300"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="3*" MinHeight="120"/>
+            </Grid.RowDefinitions>
+            <DockPanel>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                    <TextBlock Text="视频源文件夹(可留空)：" Style="{StaticResource Text}"/>
+                    <TextBox x:Name="InputDir" VerticalAlignment="Center" Width="300"/>
+                    <Button Width="100" Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Click="ViewInDir_Click">浏览</Button>
+                    <Button Width="100" Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Click="FreshList_Click">刷新列表</Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                    <TextBlock Text="视频输出文件夹(必填)：" Style="{StaticResource Text}"/>
+                    <TextBox x:Name="OutputDir" VerticalAlignment="Center" Width="300"/>
+                    <Button Width="100" Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Click="ViewOutputDir_Click">浏览</Button>
+                </StackPanel>
+                <TextBlock Text="视频列表：" Style="{StaticResource Text}" DockPanel.Dock="Top" FontSize="20" FontWeight="Bold"/>
+                <DockPanel DockPanel.Dock="Bottom" Margin="5" LastChildFill="False" Height="30">
+                    <Button DockPanel.Dock="Left" Content="移除" Width="100" Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Click="RemoveSelect_Click"/>
+                    <Button DockPanel.Dock="Left" Content="全部移除" Width="100" Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Click="ClearAll_Click"/>
+                    <Button DockPanel.Dock="Right" Content="开始" Width="100" Style="{StaticResource dgButton}" Template="{StaticResource queButtonCtrl}" FontSize="16"/>
+                    <Button Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Content="保存配置" Width="100" Click="SaveConfig_Click"/>
+                </DockPanel>
+                <ListView x:Name="VedioList" FontSize="16" FontFamily="YouYuan" HorizontalAlignment="Stretch"
+                          AllowDrop="True" DragEnter="fileListView_DragEnter" Drop="fileListView_Drop"></ListView>
+            </DockPanel>
+            <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Background="Gray"/>
+            <TextBox Grid.Row="2" Margin="5" x:Name="Logs" FontFamily="YouYuan" FontSize="13" IsReadOnly="True" VerticalScrollBarVisibility="Visible" TextChanged="Logs_Update"/>
+        </Grid>
+    </DockPanel>
+</Page>
