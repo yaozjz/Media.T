@@ -12,7 +12,7 @@ namespace Media.T.data
         public string ffmpegPath { get; set; } = "ffmpeg";
 
         //字幕嵌入目录参数
-        public SubTitle subTitle {  get; set; } = new();
+        public SubTitle subTitle { get; set; } = new();
         //编解码器设置
         public Code code { get; set; } = new();
     }
@@ -33,57 +33,7 @@ namespace Media.T.data
         public string? OutputPath { get; set; } = "";
         public string? SubTitlePath { get; set; } = "";
     }
-    public class Configs
-    {
-        private static string configsPath = @"configs\";
-        private static string jsonPath = "config.json";
-        private static string jsonFilePath = Path.Combine(configsPath, jsonPath);
 
-        public static SettingData data = new();
-
-        /// <summary>
-        /// 初始化配置文件
-        /// </summary>
-        public static void InitConfigFile()
-        {
-            CreateDir(configsPath);
-            if (!File.Exists(jsonFilePath))
-            {
-                data = new();
-                Until.JsonEdit.JsonWrite(jsonFilePath, data);
-            }
-            else
-            {
-                data = Until.JsonEdit.JsonRead(jsonFilePath);
-            }
-        }
-
-        public static void SaveConfigs()
-        {
-            Until.JsonEdit.JsonWrite(jsonFilePath, data);
-        }
-
-        /// <summary>
-        /// 文件夹创建函数
-        /// </summary>
-        /// <param name="path">目标文件你家路径</param>
-        /// <returns>创建是否成功</returns>
-        public static bool CreateDir(string path)
-        {
-            //检查文件夹结构
-            if (!Directory.Exists(path))
-            {
-                try
-                {
-                    //不存在文件夹则创建
-                    Directory.CreateDirectory(path);
-                    return true;
-                }
-                catch { }
-            }
-            return false;
-        }
-    }
     /// <summary>
     /// 编码器质量设置
     /// </summary>
@@ -125,7 +75,28 @@ namespace Media.T.data
             "high",
             "high444p"
         };
+
+        //固定质量编码
+        private static List<int> cqNum = new List<int> { 17, 19, 21, 23, 25, 30 };
+        //码率
+        private static List<int> bv = new List<int> { 50, 100, 200, 500, 1000, 2000, 5000, 10000, 2000, 50000, 100000, 500000 };
+        //编码方式
+        public static string[] EnCodeMods = new string[] { "cq", "qp", "b:v" };
+        //索引
+        public static List<List<int>> EncodeModIndex = new List<List<int>>() { cqNum, cqNum, bv };
+
+        //硬件编解码参数：
+        private static string[] H265decoders = new string[] { "", "hevc_cuvid", "hevc_qsv" };
+        private static string[] H264decoders = new string[] { "", "h264_cuvid", "h264_qsv" };
+        public static string[][] decoders = new string[][] { H264decoders, H265decoders };
+
+        private static string[] H265encoders = new string[] { "", "hevc_nvenc", "hevc_qsv" };
+        private static string[] H264encoders = new string[] { "", "h264_nvenc", "h264_qsv" };
+        public static string[][] encoders = new string[][] { H264encoders, H265encoders };
     }
+    /// <summary>
+    /// 编解码参数
+    /// </summary>
     public class Code
     {
         public int decode { get; set; } = 0;
@@ -134,5 +105,13 @@ namespace Media.T.data
         public int preset { get; set; } = 5;
         public int tune { get; set; } = 0;
         public int profile { get; set; } = 2;
+
+        public int encode_mod { get; set; } = 0;
+        public int encode_index { get; set; } = 1;
+        //输入输出文件夹
+        public string InputDir { get; set; } = "";
+        public string OutputDir { get; set; } = "";
+
     }
+
 }

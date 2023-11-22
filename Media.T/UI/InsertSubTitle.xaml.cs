@@ -35,20 +35,17 @@ namespace Media.T.UI
         //查看输入文件夹
         private void ViewInputFolder(object sender, RoutedEventArgs e)
         {
-            string file_name = Until.OpenDg.OpenFile("选择输入文件夹", Until.OpenDg.folderRule, true);
-            InputPath.Text = System.IO.Path.GetDirectoryName(file_name);
+            InputPath.Text = Until.OpenDg.OpenFile("选择输入文件夹", Until.OpenDg.folderRule, true);
         }
 
         private void ViewSubTitleFolder(object sender, RoutedEventArgs e)
         {
-            string file_name = Until.OpenDg.OpenFile("选择字幕文件夹", Until.OpenDg.folderRule, true);
-            SubTitilePath.Text = System.IO.Path.GetDirectoryName(file_name);
+            SubTitilePath.Text = Until.OpenDg.OpenFile("选择字幕文件夹", Until.OpenDg.folderRule, true);
         }
 
         private void ViewOutputFolder(object sender, RoutedEventArgs e)
         {
-            string file_name = Until.OpenDg.OpenFile("选择输出文件夹", Until.OpenDg.folderRule, true);
-            OutputPath.Text = System.IO.Path.GetDirectoryName(file_name);
+            OutputPath.Text = Until.OpenDg.OpenFile("选择输出文件夹", Until.OpenDg.folderRule, true);
         }
         /// <summary>
         /// 保存目录

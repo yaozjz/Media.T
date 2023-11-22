@@ -23,6 +23,7 @@ namespace Media.T.Until
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.CreateNoWindow = true;
                 process.StartInfo.RedirectStandardInput = true;
+                process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
                 process.EnableRaisingEvents = true;
                 process.StartInfo.FileName = exePath;
                 process.StartInfo.Arguments = arg;

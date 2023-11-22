@@ -33,7 +33,7 @@ namespace Media.T.UI
             InitializeComponent();
             //视频列表源
             VedioList.ItemsSource = fileList;
-
+            //编解码设置
             Preset.ItemsSource = data.EnCodeArg.preset;
             Preset.SelectedIndex = data.Configs.data.code.preset;
 
@@ -45,6 +45,13 @@ namespace Media.T.UI
 
             Encodes.SelectedIndex = data.Configs.data.code.encode;
             Decodes.SelectedIndex = data.Configs.data.code.decode;
+            //编码器方式
+            EncodeMod.SelectedIndex = data.Configs.data.code.encode_mod;
+            EncodeModNum.ItemsSource = data.EnCodeArg.EncodeModIndex[EncodeMod.SelectedIndex];
+            EncodeModNum.SelectedIndex = data.Configs.data.code.encode_index;
+            //输入输出文件夹
+            InputDir.Text = data.Configs.data.code.InputDir;
+            OutputDir.Text = data.Configs.data.code.OutputDir;
         }
 
         private void Logs_Update(object sender, TextChangedEventArgs e)
@@ -68,7 +75,12 @@ namespace Media.T.UI
             data.Configs.data.code.profile = Profile.SelectedIndex;
             data.Configs.data.code.encode = Encodes.SelectedIndex;
             data.Configs.data.code.decode = Decodes.SelectedIndex;
+            data.Configs.data.code.encode_mod = EncodeMod.SelectedIndex;
+            data.Configs.data.code.encode_index = EncodeModNum.SelectedIndex;
+            data.Configs.data.code.OutputDir = OutputDir.Text;
+            data.Configs.data.code.InputDir = InputDir.Text;
             data.Configs.SaveConfigs();
+            AddLogs("当前配置保存成功");
         }
         //===========拖拽设置
         /// <summary>
@@ -161,13 +173,80 @@ namespace Media.T.UI
         {
             fileList.Clear();
         }
-
+        /// <summary>
+        /// 移除当前选择的项目
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RemoveSelect_Click(object sender, RoutedEventArgs e)
         {
             if (VedioList.SelectedItem != null)
             {
                 string selectedFile = VedioList.SelectedItem.ToString();
                 fileList.Remove(selectedFile);
+            }
+        }
+        /// <summary>
+        /// 编码方式转变
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EncodeMode_change(object sender, SelectionChangedEventArgs e)
+        {
+            if (EncodeMod.SelectedIndex >= 0 && EncodeModNum != null)
+            {
+                EncodeModNum.ItemsSource = data.EnCodeArg.EncodeModIndex[EncodeMod.SelectedIndex];
+                EncodeModNum.SelectedIndex = 2;
+            }
+        }
+        /// <summary>
+        /// 开始转码
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BeginCode_Click(object sender, RoutedEventArgs e)
+        {
+            List<string> arglist = new List<string>();
+            foreach (string file in VedioList.Items)
+            {
+                string args = string.Empty;
+                var outfile = System.IO.Path.GetFileNameWithoutExtension(file);
+                if (Decodes.SelectedIndex > 0)
+                    args += $"-c:v {data.EnCodeArg.decoders[1][Decodes.SelectedIndex]} ";
+                args += $"-i \"{file}\" ";
+                if (Encodes.SelectedIndex > 0)
+                    args += $"-c:v {data.EnCodeArg.encoders[OutputFormat.SelectedIndex][Encodes.SelectedIndex]} -pix_fmt yuv420p ";
+                args += $"-preset {Preset.Text} -tune {Tune.Text} -{data.EnCodeArg.EnCodeMods[EncodeMod.SelectedIndex]} {EncodeModNum.Text} -profile:v {Profile.Text} ";
+                if (EncodeMod.SelectedIndex == 0)
+                {
+                    args += "-qmin 17 -qmax 30 ";
+                }
+                args += "-c:a copy ";
+                if (AddSubTitle.IsChecked == true)
+                {
+                    string path = file;
+                    path = path.Replace("\\", "\\\\");
+                    args += $"-vf subtitles=\"\'{path.Replace(":", "\\:")}\'\" ";
+                }
+                args += $"-map_metadata -1 -map_chapters -1 -y \"{System.IO.Path.Combine(OutputDir.Text, $"{outfile}.{OutputFormat.Text}")}\"";
+                arglist.Add(args);
+            }
+
+            var go = new Until.ffmpegUse() { tb = Logs };
+            go.BatchStart(arglist);
+        }
+        /// <summary>
+        /// 查看视频流
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void ViewVedioStream_Click(object sender, RoutedEventArgs e)
+        {
+            var result = await Until.EXEUse.EXESend(data.Configs.data.ffmpegPath, $"-i {VedioList.SelectedItem} -vstats");
+            var r = Regex.Matches(result[1], @"Stream #(.*?)(\r\n|\r|\n)");
+            foreach (Match r1 in r)
+            {
+                Logs.AppendText(r1.Value);
             }
         }
     }

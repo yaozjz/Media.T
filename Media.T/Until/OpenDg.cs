@@ -27,6 +27,8 @@ namespace Media.T.Until
             }
             if (openFileDialog.ShowDialog() == true)
             {
+                if (isFolder)
+                    return Path.GetDirectoryName(openFileDialog.FileName);
                 return openFileDialog.FileName;
             }
             return "";
