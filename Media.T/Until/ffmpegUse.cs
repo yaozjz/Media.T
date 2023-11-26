@@ -36,6 +36,7 @@ namespace Media.T.Until
                 {
                     data.Configs.data.ffmpegPath, ars
                 });
+                Application.Current.Dispatcher.Invoke(delegate { AddLogs("转换结束。"); });
             }
         }
         private void AddLogs(string msg)

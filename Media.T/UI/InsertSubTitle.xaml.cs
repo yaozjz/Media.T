@@ -68,7 +68,7 @@ namespace Media.T.UI
         private void InsertBegin_Click(object sender, RoutedEventArgs e)
         {
             //获取输入文件夹下所有的视频文件
-            IEnumerable<string> videos = Until.OpenDg.Get_Folder(InputPath.Text, "*.mkv");
+            IEnumerable<string> videos = Until.OpenDg.Get_Folder(InputPath.Text, @"(.*?)\.mkv");
             //var sub_titles = Until.OpenDg.Get_Folder(SubTitilePath.Text, $"*.{TitleFormat.Text}");
             if (videos != null)
             {
