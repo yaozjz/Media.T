@@ -9,7 +9,7 @@ namespace Media.T.data
     public class SettingData
     {
         public WinStatus winSatus { get; set; } = new();
-        public string ffmpegPath { get; set; } = "ffmpeg";
+        public string ffmpegPath { get; set; } = @"tools\ffmpeg\bin\ffmpeg.exe";
 
         //字幕嵌入目录参数
         public SubTitle subTitle { get; set; } = new();

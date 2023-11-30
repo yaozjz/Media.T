@@ -55,5 +55,15 @@ namespace Media.T
         {
             MainContent.Content = new UI.InsertSubTitle();
         }
+
+        private void MusicTrans_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new UI.MusicTrans();
+        }
+
+        private void OtherFormat_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new UI.OtherFormat();
+        }
     }
 }

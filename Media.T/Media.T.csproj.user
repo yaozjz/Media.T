@@ -10,6 +10,12 @@
     <Compile Update="UI\InsertSubTitle.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="UI\MusicTrans.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="UI\OtherFormat.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="UI\SettingUI.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -22,6 +28,12 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="UI\InsertSubTitle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UI\MusicTrans.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UI\OtherFormat.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="UI\SettingUI.xaml">

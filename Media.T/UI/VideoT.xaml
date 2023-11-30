@@ -68,8 +68,8 @@
                     <Button Width="100" Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Click="ViewOutputDir_Click">浏览</Button>
                     <TextBlock Text="输出格式：" Style="{StaticResource Text}" VerticalAlignment="Center"/>
                     <ComboBox x:Name="OutputFormat" VerticalAlignment="Center" Width="100">
-                        <ComboBoxItem IsSelected="True">mp4</ComboBoxItem>
-                        <ComboBoxItem>hevc</ComboBoxItem>
+                        <ComboBoxItem IsSelected="True">h.264</ComboBoxItem>
+                        <ComboBoxItem>h.265</ComboBoxItem>
                     </ComboBox>
                     <TextBlock Text="含内嵌字幕：" Style="{StaticResource Text}"/>
                     <CheckBox IsChecked="True" x:Name="AddSubTitle" VerticalAlignment="Center"/>

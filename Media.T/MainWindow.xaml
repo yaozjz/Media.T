@@ -8,7 +8,7 @@
         Title="视频格式工作站" Height="640" Width="1152"
         WindowStartupLocation="CenterScreen"
         PreviewKeyDown="WinKeyDown" Closing="WinClosing"
-        >
+        MinHeight="640" MinWidth="960">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="90"/>
@@ -33,6 +33,18 @@
                     <StackPanel Orientation="Vertical">
                         <Image Source="image/22.png" Width="40"/>
                         <TextBlock Text="字幕嵌入" TextAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource MenuButton}" Click="MusicTrans_Click">
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="image/22.png" Width="40"/>
+                        <TextBlock Text="音频转换" TextAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource MenuButton}" Click="OtherFormat_Click">
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="image/21.png" Width="40"/>
+                        <TextBlock Text="其它转换" TextAlignment="Center"/>
                     </StackPanel>
                 </Button>
             </StackPanel>

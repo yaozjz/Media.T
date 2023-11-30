@@ -5,17 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Media.T.Until
+namespace Media.T.OpenFFmpeg
 {
-    class EXEUse
+    public class FFmpegTerminal
     {
         /// <summary>
-        /// 阻塞型获取
+        /// ffmpeg地址
         /// </summary>
-        /// <param name="arr"></param>
-        public static async Task<string[]> EXESend(string exePath, string arg)
+        public string FFmpegPath { get; set; } = "ffmpeg";
+        public async Task<string[]> FFmpegSend(string arg, string coding = "utf-8")
         {
             Process process = new();
+            var encoding = Encoding.GetEncoding(coding);
             try
             {
                 process.StartInfo.RedirectStandardOutput = true;
@@ -23,10 +24,10 @@ namespace Media.T.Until
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.CreateNoWindow = true;
                 process.StartInfo.RedirectStandardInput = true;
-                process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
-                process.StartInfo.StandardErrorEncoding = Encoding.UTF8;
+                process.StartInfo.StandardOutputEncoding = encoding;
+                process.StartInfo.StandardErrorEncoding = encoding;
                 process.EnableRaisingEvents = true;
-                process.StartInfo.FileName = exePath;
+                process.StartInfo.FileName = FFmpegPath;
                 process.StartInfo.Arguments = arg;
                 process.Start();
 

@@ -112,7 +112,8 @@ namespace Media.T.UI
             // 添加文件路径到列表
             foreach (var file in files)
             {
-                if (!fileList.Contains(file))
+                string extension = System.IO.Path.GetExtension(file).ToLowerInvariant();
+                if (!fileList.Contains(file) && data.MediaFormat.VideoFormats.Contains(extension))
                 {
                     fileList.Add(file);
                 }
@@ -228,7 +229,7 @@ namespace Media.T.UI
                     path = path.Replace("\\", "\\\\");
                     args += $"-vf subtitles=\"\'{path.Replace(":", "\\:")}\'\" ";
                 }
-                args += $"-map_metadata -1 -map_chapters -1 -y \"{System.IO.Path.Combine(OutputDir.Text, $"{outfile}.{OutputFormat.Text}")}\"";
+                args += $"-map_metadata -1 -map_chapters -1 -y \"{System.IO.Path.Combine(OutputDir.Text, $"{outfile}{data.MediaFormat.VideoFormats[OutputFormat.SelectedIndex]}")}\"";
                 arglist.Add(args);
             }
 
@@ -242,11 +243,16 @@ namespace Media.T.UI
         /// <param name="e"></param>
         private async void ViewVedioStream_Click(object sender, RoutedEventArgs e)
         {
-            var result = await Until.EXEUse.EXESend(data.Configs.data.ffmpegPath, $"-i {VedioList.SelectedItem} -vstats");
+            var result = await Until.EXEUse.EXESend(data.Configs.data.ffmpegPath, $"-i \"{VedioList.SelectedItem}\" -vstats");
             var r = Regex.Matches(result[1], @"Stream #(.*?)(\r\n|\r|\n)");
             foreach (Match r1 in r)
             {
                 Logs.AppendText(r1.Value);
+            }
+            var r2 = Regex.Match(result[1], @"Duration:(.*?)(\r\n|\r|\n)");
+            if (r2.Success)
+            {
+                AddLogs(r2.Value);
             }
         }
     }
