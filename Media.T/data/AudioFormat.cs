@@ -17,5 +17,10 @@ namespace Media.T.data
         {
             ".mp4", ".mkv"
         };
+
+        static public List<string> VFFormat { get; private set; } = new List<string>()
+        {
+            ".lrc", ".srt", ".ass"
+        };
     }
 }

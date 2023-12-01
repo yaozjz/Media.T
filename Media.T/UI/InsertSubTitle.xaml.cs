@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Media.T.Until;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Media.T.UI
 {
@@ -20,9 +11,67 @@ namespace Media.T.UI
     /// </summary>
     public partial class InsertSubTitle : Page
     {
+        ObservableCollection<string> VideoItems { get; set; } = new ObservableCollection<string>();
+        ObservableCollection<string> SubTitleItems { get; set; } = new ObservableCollection<string>();
         private void AddLogs(string msg)
         {
             Logs.AppendText(msg + '\r');
+        }
+        /// <summary>
+        /// 列表刷新
+        /// </summary>
+        /// <param name="listView"></param>
+        /// <param name="path"></param>
+        /// <param name="filter"></param>
+        private void FreshList(ObservableCollection<string> listView, string path, string filter)
+        {
+            if(path != "")
+            {
+                IEnumerable<string> videos = Until.OpenDg.Get_Folder(path, filter);
+                if(videos != null)
+                {
+                    listView.Clear();
+                    foreach (var video in videos)
+                    {
+                        listView.Add(video);
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 视频列表刷新
+        /// </summary>
+        private void FreshVedeo()
+        {
+            if (InputPath.Text != string.Empty)
+            {
+                FreshList(VideoItems, InputPath.Text.Trim(), @"(.*)\.mkv");
+                SortListView(VideoItems);
+            }
+        }
+        /// <summary>
+        /// 字幕列表刷新
+        /// </summary>
+        private void FreshSubtitle()
+        {
+            
+            if (SubTitilePath.Text != string.Empty)
+            {
+                FreshList(SubTitleItems, SubTitilePath.Text.Trim(), @"(.*)\" + TitleFormat.Text);
+                SortListView(SubTitleItems);
+            }
+        }
+        private void SortListView(ObservableCollection<string> FileItems)
+        {
+            // 按照文件名排序
+            var sortedItems = FileItems.OrderBy(path => path, new NaturalSortComparer()).ToList();
+
+            // 清除并重新添加已排序的项
+            FileItems.Clear();
+            foreach (var sortedItem in sortedItems)
+            {
+                FileItems.Add(sortedItem);
+            }
         }
         public InsertSubTitle()
         {
@@ -31,16 +80,22 @@ namespace Media.T.UI
             InputPath.Text = data.Configs.data.subTitle.InputPath;
             OutputPath.Text = data.Configs.data.subTitle.OutputPath;
             SubTitilePath.Text = data.Configs.data.subTitle.SubTitlePath;
+            VideoList.ItemsSource = VideoItems;
+            SubtitleList.ItemsSource = SubTitleItems;
+            FreshVedeo();
+            FreshSubtitle();
         }
         //查看输入文件夹
         private void ViewInputFolder(object sender, RoutedEventArgs e)
         {
             InputPath.Text = Until.OpenDg.OpenFile("选择输入文件夹", Until.OpenDg.folderRule, true);
+            FreshVedeo();
         }
 
         private void ViewSubTitleFolder(object sender, RoutedEventArgs e)
         {
             SubTitilePath.Text = Until.OpenDg.OpenFile("选择字幕文件夹", Until.OpenDg.folderRule, true);
+            FreshSubtitle();
         }
 
         private void ViewOutputFolder(object sender, RoutedEventArgs e)
@@ -67,26 +122,24 @@ namespace Media.T.UI
         /// <param name="e"></param>
         private void InsertBegin_Click(object sender, RoutedEventArgs e)
         {
-            //获取输入文件夹下所有的视频文件
-            IEnumerable<string> videos = Until.OpenDg.Get_Folder(InputPath.Text, @"(.*?)\.mkv");
-            //var sub_titles = Until.OpenDg.Get_Folder(SubTitilePath.Text, $"*.{TitleFormat.Text}");
-            if (videos != null)
+            string output_dir = OutputPath.Text.Trim();
+            Until.OpenDg.CreateDir(output_dir);
+            if(VideoList.Items.Count != SubtitleList.Items.Count)
             {
-                List<string> args = new List<string>();
-                foreach (var video in videos)
-                {
-                    string _name = System.IO.Path.GetFileNameWithoutExtension(video);
-                    string title_name = _name + "." + TitleFormat.Text;
-                    string output_name = _name + ".mkv";
-                    string arg = $"-i \"{System.IO.Path.Combine(InputPath.Text, video)}\" " +
-                        $"-i \"{System.IO.Path.Combine(SubTitilePath.Text, title_name)}\" -c copy " +
-                        $"\"{System.IO.Path.Combine(OutputPath.Text, output_name)}\" -y";
-                    args.Add(arg);
-                }
-                Until.ffmpegUse ffmpeg_go = new Until.ffmpegUse() { tb = Logs };
-                //后台线程
-                ffmpeg_go.BatchStart(args);
+                AddLogs("视频文件数量与字幕文件数量不一致，请检查你的文件。");
+                return;
             }
+            List<string> args = new List<string>();
+            foreach (var pair in VideoItems.Zip(SubTitleItems, (item1, item2) => new { Item1 = item1, Item2 = item2 }))
+            {
+                string _name = System.IO.Path.GetFileNameWithoutExtension(pair.Item1);
+                string _format = Path.GetExtension(pair.Item1);
+                string _subtitle = pair.Item2;
+                string _out_name = Path.Combine(output_dir, $"1-{_name}{_format}");
+                string arg = $"-i \"{pair.Item1}\" -i \"{_subtitle}\" -c copy \"{_out_name}\" ";
+                args.Add(arg);
+            }
+            ffmpegUse.BatchRun(args, Logs);
         }
 
         private void LogsUpdate(object sender, TextChangedEventArgs e)
@@ -97,6 +150,26 @@ namespace Media.T.UI
                 Logs.Text = Logs.Text.Substring(Logs.GetLineText(0).Length + 1);
             }
             Logs.ScrollToEnd();
+        }
+
+
+        private void FreshVideoList(object sender, RoutedEventArgs e)
+        {
+            FreshVedeo();
+        }
+        /// <summary>
+        /// 刷新字幕栏
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FreshSubtitle_Click(object sender, RoutedEventArgs e)
+        {
+            FreshSubtitle();
+        }
+
+        private void SubtitleSelectChange(object sender, SelectionChangedEventArgs e)
+        {
+            FreshSubtitle();
         }
     }
 }

@@ -113,5 +113,11 @@ namespace Media.T.data
         public string OutputDir { get; set; } = "";
 
     }
-
+    public class StreamGrid
+    {
+        public string Name { get; set; } = "";
+        public string FileType { get; set; } = "";
+        public string VideoFormat { get; set; } = "";
+        public string AudioFormat { get; set; } = "";
+    }
 }

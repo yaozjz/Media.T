@@ -16,13 +16,30 @@
         </Grid.RowDefinitions>
         <GridSplitter Height="5" Grid.Row="1" HorizontalAlignment="Stretch" Background="Gray"/>
         <TextBox x:Name="Logs" Grid.Row="2" FontFamily="YouYuan" FontSize="13" IsReadOnly="True" TextChanged="LogsUpdate"/>
-        <ListView Grid.Row="0" x:Name="ListView" MinHeight="100" AllowDrop="True" DragEnter="fileListView_DragEnter" Drop="fileListView_Drop">
-            <ListView.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="移除"/>
-                    <MenuItem Header="查看信息" Click="StreamInfo_Click"/>
-                </ContextMenu>
-            </ListView.ContextMenu>
-        </ListView>
+        <DockPanel Grid.Row="0">
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="5">
+                <TextBlock Text="其他参数：" Style="{StaticResource Text}" />
+                <ComboBox IsEditable="True" x:Name="OtherArg" VerticalAlignment="Center" Width="300" />
+                <TextBlock Text="输出格式：" Style="{StaticResource Text}"/>
+                <TextBox x:Name="OutFormat" Width="100" VerticalAlignment="Center"/>
+                <Button Content="开始" Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Width="100" Click="RunTrans_Click"/>
+            </StackPanel>
+            <ListView x:Name="ListView" MinHeight="100" AllowDrop="True" DragEnter="fileListView_DragEnter" Drop="fileListView_Drop">
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="移除"/>
+                        <MenuItem Header="查看信息" Click="StreamInfo_Click"/>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Width="400" Header="文件" DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn Header="文件类型" Width="100" DisplayMemberBinding="{Binding FileType}"/>
+                        <GridViewColumn Header="视频" Width="100" DisplayMemberBinding="{Binding VideoFormat}"/>
+                        <GridViewColumn Header="音频流" Width="100" DisplayMemberBinding="{Binding AudioFormat}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </DockPanel>
     </Grid>
 </Page>

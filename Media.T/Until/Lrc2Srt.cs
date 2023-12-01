@@ -26,14 +26,11 @@ namespace Media.T.Until
                 using (StreamWriter writer = new StreamWriter(outputSrtPath, false, Encoding.UTF8))
                 {
                     int counter = 1;
-                    for (int i = 0; i < matches.Count - 1; i++)
+                    for (int i = 0; i < matches.Count; i++)
                     {
                         // 获取当前时间戳和文本
                         string timestamp = matches[i].Groups[1].Value;
                         string text = matches[i].Groups[2].Value.Trim();
-
-                        // 获取下一个时间戳的秒数
-                        double nextTimestampSeconds = ParseTimestamp(matches[i + 1].Groups[1].Value);
 
                         // 解析当前时间戳为秒数
                         double currentTimestampSeconds = ParseTimestamp(timestamp);
@@ -41,6 +38,11 @@ namespace Media.T.Until
                         // 判断是否在时间范围内
                         if (currentTimestampSeconds >= startTime && currentTimestampSeconds <= endTime)
                         {
+                            // 获取下一个时间戳的秒数
+                            double nextTimestampSeconds = (i + 1 < matches.Count)
+                                ? ParseTimestamp(matches[i + 1].Groups[1].Value)
+                                : endTime;
+
                             // 写入 SRT 文件
                             writer.WriteLine(counter);
                             writer.WriteLine($"{FormatTimestamp(currentTimestampSeconds)} --> {FormatTimestamp(nextTimestampSeconds)}");

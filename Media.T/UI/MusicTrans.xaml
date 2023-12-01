@@ -15,9 +15,9 @@
             <StackPanel Orientation="Vertical">
                 <TextBlock Text="字幕转换工具" Style="{StaticResource Title}"/>
                 <TextBlock Text="lrc歌词文件仅支持转换为srt" Foreground="Red" Style="{StaticResource Text}"/>
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" AllowDrop="True" DragEnter="vfFile_DragEnter" Drop="vfFile_Drop">
                     <TextBlock Text="输入文件:" Style="{StaticResource Text}"/>
-                    <TextBox x:Name="InputFile" Width="300" VerticalAlignment="Center"/>
+                    <TextBox x:Name="InputFile" Width="500" VerticalAlignment="Center" />
                     <Button Content="浏览" Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Width="100" Click="ViewFile_Click"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
@@ -28,7 +28,7 @@
                         <ComboBoxItem>.ass</ComboBoxItem>
                     </ComboBox>
                     <TextBlock Text="时间总长(单位：分)：" Style="{StaticResource Text}"/>
-                    <TextBox x:Name="TutalTime" Width="100" VerticalAlignment="Center" Text="4"/>
+                    <TextBox x:Name="TutalTime" Width="100" VerticalAlignment="Center" Text="6"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
                     <Button Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Content="开始" Width="100" Click="Trans_Click" Height="30"/>
@@ -36,7 +36,7 @@
                 </StackPanel>
             </StackPanel>
         </Border>
-        <TextBox IsReadOnly="True" DockPanel.Dock="Bottom" x:Name="logs" Height="100" TextChanged="LogsTextChange"/>
+        <TextBox IsReadOnly="True" DockPanel.Dock="Bottom" x:Name="logs" Height="100" TextChanged="LogsTextChange" VerticalScrollBarVisibility="Auto"/>
         <Border BorderThickness="1" BorderBrush="Gray" CornerRadius="10" Margin="5" Padding="5">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" >
                 <ScrollViewer.Content>
@@ -59,6 +59,7 @@
                             <ListView.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="移除" Click="RemoveSelect_Click"/>
+                                    <MenuItem Header="查看信息" Click="AudioFileInfo_Click"/>
                                     <MenuItem Header="移除全部" Click="RemoveAll_Click"/>
                                 </ContextMenu>
                             </ListView.ContextMenu>
@@ -67,7 +68,7 @@
                         <StackPanel Grid.Row="3">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="输出文件夹：" Style="{StaticResource Text}"/>
-                                <TextBox x:Name="MusicOutputDir" Width="400" VerticalAlignment="Center"/>
+                                <TextBox x:Name="MusicOutputDir" Width="400" VerticalAlignment="Center" Text="D:\FFout"/>
                                 <Button Content="浏览" Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Width="100" Click="ViewAudioFile_Click"/>
                                 <Button Content="打开输出文件夹" Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Width="200" Click="OpenOutAudioFolder_Click"/>
                             </StackPanel>

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Media.T.OpenFFmpeg;
+using Media.T.Until;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -205,18 +207,34 @@ namespace Media.T.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void BeginCode_Click(object sender, RoutedEventArgs e)
+        private async void BeginCode_Click(object sender, RoutedEventArgs e)
         {
+            //检查是否存在目标文件夹
+            string output_dir = OutputDir.Text.Trim();
+            Until.OpenDg.CreateDir(output_dir);
             List<string> arglist = new List<string>();
             foreach (string file in VedioList.Items)
             {
                 string args = string.Empty;
-                var outfile = System.IO.Path.GetFileNameWithoutExtension(file);
+                string outfile = System.IO.Path.GetFileNameWithoutExtension(file);
+                //先检测当前视频文件的格式，并选择合适的硬件解码器
+                AllInfo allInfo = await ffmpegUse.GetInfo(file);
                 if (Decodes.SelectedIndex > 0)
-                    args += $"-c:v {data.EnCodeArg.decoders[1][Decodes.SelectedIndex]} ";
+                {
+                    //根据视频编码格式选择解码器
+                    foreach (string codec_name in FormatDictionaly.VideoCodeName)
+                    {
+                        if (allInfo.VideoStream.Format == codec_name)
+                        {
+                            //获取解码方式
+                            args += FormatDictionaly.GetEncoder(codec_name, Decodes.SelectedIndex) + " ";
+                        }
+                    }
+                    //没有对应的解码方式就使用软件解码
+                }
                 args += $"-i \"{file}\" ";
                 if (Encodes.SelectedIndex > 0)
-                    args += $"-c:v {data.EnCodeArg.encoders[OutputFormat.SelectedIndex][Encodes.SelectedIndex]} -pix_fmt yuv420p ";
+                    args += $"-c:v {FormatDictionaly.encoders[OutputFormat.SelectedIndex][Encodes.SelectedIndex]} -pix_fmt yuv420p ";
                 args += $"-preset {Preset.Text} -tune {Tune.Text} -{data.EnCodeArg.EnCodeMods[EncodeMod.SelectedIndex]} {EncodeModNum.Text} -profile:v {Profile.Text} ";
                 if (EncodeMod.SelectedIndex == 0)
                 {
@@ -225,16 +243,17 @@ namespace Media.T.UI
                 args += "-c:a copy ";
                 if (AddSubTitle.IsChecked == true)
                 {
-                    string path = file;
-                    path = path.Replace("\\", "\\\\");
-                    args += $"-vf subtitles=\"\'{path.Replace(":", "\\:")}\'\" ";
+                    if(allInfo.SubTitles.Format != null)
+                    {
+                        string path = file;
+                        path = path.Replace("\\", "\\\\");
+                        args += $"-vf subtitles=\"\'{path.Replace(":", "\\:")}\'\" ";
+                    }
                 }
-                args += $"-map_metadata -1 -map_chapters -1 -y \"{System.IO.Path.Combine(OutputDir.Text, $"{outfile}{data.MediaFormat.VideoFormats[OutputFormat.SelectedIndex]}")}\"";
+                args += $"-map_metadata -1 -map_chapters -1 -y \"{System.IO.Path.Combine(output_dir, $"1-{outfile}{data.MediaFormat.VideoFormats[OutputFormat.SelectedIndex]}")}\"";
                 arglist.Add(args);
             }
-
-            var go = new Until.ffmpegUse() { tb = Logs };
-            go.BatchStart(arglist);
+            ffmpegUse.BatchRun(arglist, Logs);
         }
         /// <summary>
         /// 查看视频流
@@ -243,7 +262,7 @@ namespace Media.T.UI
         /// <param name="e"></param>
         private async void ViewVedioStream_Click(object sender, RoutedEventArgs e)
         {
-            var result = await Until.EXEUse.EXESend(data.Configs.data.ffmpegPath, $"-i \"{VedioList.SelectedItem}\" -vstats");
+            var result = await ffmpegUse.FFmpegTerminal($"-i \"{VedioList.SelectedItem}\" -vstats");
             var r = Regex.Matches(result[1], @"Stream #(.*?)(\r\n|\r|\n)");
             foreach (Match r1 in r)
             {

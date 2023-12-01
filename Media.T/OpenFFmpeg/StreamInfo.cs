@@ -33,15 +33,25 @@ namespace Media.T.OpenFFmpeg
     {
         public VideoStream? VideoStream { get; set; } = new VideoStream();
         public AudioStream? AudioStream { get; set; } = new AudioStream();
+        public FFmpegStream? SubTitles { get; set; } = new FFmpegStream();
     }
+    /// <summary>
+    /// 要获取文件信息请调用这个类
+    /// </summary>
     public class StreamInfo
     {
-        public string FFmpegPath { get; set; } = "where ffmpeg";
-
-        public async Task<AllInfo?> GetInfo(string fileName)
+        private string FFmpegPath { get; set; } = "where ffmpeg";
+        /// <summary>
+        /// 获取打印信息
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="ffmpeg_path"></param>
+        /// <returns></returns>
+        public async Task<AllInfo?> GetInfo(string fileName, string ffmpeg_path)
         {
+            FFmpegPath = Path.GetDirectoryName(ffmpeg_path);
             FFmpegTerminal ffmpeg_terminal = new FFmpegTerminal() { FFmpegPath = Path.Combine(FFmpegPath, "ffprobe.exe") };
-            string[] StreamStatus = await ffmpeg_terminal.FFmpegSend($"-show_streams {fileName}");
+            string[] StreamStatus = await ffmpeg_terminal.FFmpegSend($"-show_streams \"{fileName}\"");
             if (StreamStatus.Length > 1)
             {
                 //参数初始化
@@ -89,6 +99,11 @@ namespace Media.T.OpenFFmpeg
                         info.VideoStream.Height = Convert.ToInt32(d["height"]);
                         info.VideoStream.level = d["level"];
                         info.VideoStream.ColorDepth = d["pix_fmt"];
+                    }
+                    if (d["codec_type"] == "subtitle")
+                    {
+                        info.SubTitles.Format = d["codec_name"];
+                        info.SubTitles.Duration = Sec2TimeSpan(d["duration"]);
                     }
                 }
                 return info;

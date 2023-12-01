@@ -1,21 +1,9 @@
 ﻿using Media.T.OpenFFmpeg;
-using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Media.T.Until;
 
 namespace Media.T.UI
 {
@@ -24,7 +12,7 @@ namespace Media.T.UI
     /// </summary>
     public partial class OtherFormat : Page
     {
-        private ObservableCollection<string> fileList = new ObservableCollection<string>();
+        private ObservableCollection<data.StreamGrid> fileList = new ObservableCollection<data.StreamGrid>();
         void AddLogs(string msg)
         {
             Logs.AppendText(msg + '\r');
@@ -50,9 +38,9 @@ namespace Media.T.UI
         {
             if (ListView.SelectedItem != null)
             {
-                string ffmpeg_path = System.IO.Path.GetDirectoryName(data.Configs.data.ffmpegPath);
-                StreamInfo stream_info = new StreamInfo() { FFmpegPath = ffmpeg_path };
-                var r = await stream_info.GetInfo(ListView.SelectedItem.ToString());
+                var select_item = ListView.SelectedItem as data.StreamGrid;
+                StreamInfo stream_info = new StreamInfo();
+                var r = await stream_info.GetInfo(select_item.Name, data.Configs.data.ffmpegPath);
                 if (r != null)
                 {
                     if(r.VideoStream.Format != null)
@@ -79,19 +67,71 @@ namespace Media.T.UI
                 e.Effects = DragDropEffects.None;
             }
         }
-
-        private void fileListView_Drop(object sender, DragEventArgs e)
+        /// <summary>
+        /// 拖拽检测
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void fileListView_Drop(object sender, DragEventArgs e)
         {
             // 获取拖拽的文件路径
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            var ffprobe = new StreamInfo();
+
             // 添加文件路径到列表
             foreach (var file in files)
             {
-                if (!fileList.Contains(file))
+                bool isDuplicate = fileList.Any(filePath => filePath.Name == file);
+                if (!isDuplicate)
                 {
-                    fileList.Add(file);
+                    // 如果文件路径还未存在于fileList中，则开始添加内容
+                    var stream_info = await ffprobe.GetInfo(file, data.Configs.data.ffmpegPath);
+                    var _grid = new data.StreamGrid();
+                    _grid.Name = file;
+                    _grid.FileType = System.IO.Path.GetExtension(file);
+                    if(stream_info != null )
+                    {
+                        if (stream_info.VideoStream.Format != null)
+                        {
+                            _grid.VideoFormat = stream_info.VideoStream.Format;
+                        }
+                        else
+                        {
+                            _grid.VideoFormat = "无";
+                        }
+                        if(stream_info.AudioStream.Format != null)
+                        {
+                            _grid.AudioFormat = stream_info.AudioStream.Format;
+                        }
+                        else
+                        {
+                            _grid.AudioFormat = "无";
+                        }
+                    }
+                    else
+                    {
+                        AddLogs("无法获取文件信息.");
+                    }
+                    fileList.Add(_grid);
                 }
             }
+        }
+        /// <summary>
+        /// 开始转换
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RunTrans_Click(object sender, RoutedEventArgs e)
+        {
+            List<string> args = new List<string>();
+            foreach (data.StreamGrid file in fileList)
+            {
+                string path = System.IO.Path.GetDirectoryName(file.Name);
+                string out_name = "1-" + System.IO.Path.GetFileNameWithoutExtension(file.Name) + OutFormat.Text;
+                string arg = OpenFFmpeg.FormatTrans.GetSimpleTransArg(file.Name, System.IO.Path.Combine(path, out_name), OtherArg.Text);
+                args.Add(arg);
+            }
+            ffmpegUse.BatchRun(args, Logs);
         }
     }
 }

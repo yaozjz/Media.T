@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using Media.T.Until;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,8 +67,7 @@ namespace Media.T.UI
 
         private void LookatFFmpeg_Click(object sender, RoutedEventArgs e)
         {
-            Until.ffmpegUse fu = new() { tb = Logs };
-            fu.Start(data.Configs.data.ffmpegPath, Args.Text.Trim());
+            ffmpegUse.OnesRun(Args.Text.Trim(), Logs);
             //清空参数框
             Args.Text = "";
         }
@@ -86,7 +86,7 @@ namespace Media.T.UI
         /// <param name="e"></param>
         private async void LookAtCode_Click(object sender, RoutedEventArgs e)
         {
-            var result = await Until.EXEUse.EXESend(data.Configs.data.ffmpegPath, "-hwaccels");
+            var result = await ffmpegUse.FFmpegTerminal("-hwaccels");
             if (result.Length == 1)
             {
                 AddLogs("出现错误: " + result[0]);
@@ -108,7 +108,7 @@ namespace Media.T.UI
 
         private async void LookAtFormat_Click(object sender, RoutedEventArgs e)
         {
-            var result = await Until.EXEUse.EXESend(data.Configs.data.ffmpegPath, "-codecs");
+            var result = await ffmpegUse.FFmpegTerminal("-codecs");
             var h264_surpot = Regex.Match(result[0], @"H.264(.*?)(\r\n|\r|\n)");
             var h265_surpot = Regex.Match(result[0], @"H.265(.*?)(\r\n|\r|\n)");
             if(h264_surpot.Success)

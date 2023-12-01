@@ -15,16 +15,16 @@
                 <TextBlock Text="解码器：" Style="{StaticResource Text}"/>
                 <ComboBox x:Name="Decodes" Width="200" VerticalAlignment="Center">
                     <ComboBoxItem IsSelected="True">软件解码</ComboBoxItem>
-                    <ComboBoxItem>N卡解码（NVEnc）</ComboBoxItem>
                     <ComboBoxItem>Intel解码（qsv）（核显也支持）</ComboBoxItem>
+                    <ComboBoxItem>N卡解码（NVEnc）</ComboBoxItem>
                 </ComboBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="编码器：" Style="{StaticResource Text}"/>
                 <ComboBox x:Name="Encodes" Width="200" VerticalAlignment="Center">
                     <ComboBoxItem IsSelected="True">软件编码</ComboBoxItem>
-                    <ComboBoxItem>N卡编码（NVEnc）</ComboBoxItem>
                     <ComboBoxItem>Intel编码（qsv）（核显也支持）</ComboBoxItem>
+                    <ComboBoxItem>N卡编码（NVEnc）</ComboBoxItem>
                 </ComboBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
@@ -66,7 +66,7 @@
                     <TextBlock Text="视频输出文件夹(必填)：" Style="{StaticResource Text}"/>
                     <TextBox x:Name="OutputDir" VerticalAlignment="Center" Width="300"/>
                     <Button Width="100" Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Click="ViewOutputDir_Click">浏览</Button>
-                    <TextBlock Text="输出格式：" Style="{StaticResource Text}" VerticalAlignment="Center"/>
+                    <TextBlock Text="编码格式：" Style="{StaticResource Text}" VerticalAlignment="Center"/>
                     <ComboBox x:Name="OutputFormat" VerticalAlignment="Center" Width="100">
                         <ComboBoxItem IsSelected="True">h.264</ComboBoxItem>
                         <ComboBoxItem>h.265</ComboBoxItem>

@@ -23,8 +23,8 @@
                 <Button Width="80" Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Click="ViewSubTitleFolder">浏览</Button>
                 <TextBlock Text="字幕格式：" Style="{StaticResource Text}"/>
                 <ComboBox Width="100" Height="24" x:Name="TitleFormat">
-                    <ComboBoxItem IsSelected="True">ass</ComboBoxItem>
-                    <ComboBoxItem>srt</ComboBoxItem>
+                    <ComboBoxItem IsSelected="True">.ass</ComboBoxItem>
+                    <ComboBoxItem>.srt</ComboBoxItem>
                 </ComboBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
@@ -39,6 +39,33 @@
                         Width="300" Height="40" FontSize="16" Margin="20 0 20 0" Click="InsertBegin_Click">开始嵌入字幕</Button>
             </StackPanel>
         </StackPanel>
-        <TextBox x:Name="Logs" FontFamily="YouYuan" FontSize="13" Margin="5" IsReadOnly="True" VerticalScrollBarVisibility="Visible" TextChanged="LogsUpdate"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <GridSplitter Grid.Row="1" Grid.ColumnSpan="2" Background="Gray" HorizontalAlignment="Stretch"/>
+            <TextBox Grid.Row="2" Grid.ColumnSpan="2" x:Name="Logs" FontFamily="YouYuan" FontSize="13" Margin="5" IsReadOnly="True" 
+                     VerticalScrollBarVisibility="Visible" TextChanged="LogsUpdate"/>
+            <ListView Grid.Row="0" Grid.Column="0" x:Name="VideoList">
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="刷新" Click="FreshVideoList"/>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+            </ListView>
+            <ListView Grid.Row="0" Grid.Column="1" x:Name="SubtitleList">
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="刷新" Click="FreshSubtitle_Click"/>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+            </ListView>
+        </Grid>
     </DockPanel>
 </Page>
