@@ -65,5 +65,10 @@ namespace Media.T
         {
             MainContent.Content = new UI.OtherFormat();
         }
+
+        private void TextTrans_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new UI.TextTrans();
+        }
     }
 }

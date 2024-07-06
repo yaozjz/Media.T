@@ -19,6 +19,9 @@
     <Compile Update="UI\SettingUI.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="UI\TextTrans.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="UI\VideoT.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -37,6 +40,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="UI\SettingUI.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UI\TextTrans.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="UI\VideoT.xaml">

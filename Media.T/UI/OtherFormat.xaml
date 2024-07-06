@@ -19,9 +19,9 @@
         <DockPanel Grid.Row="0">
             <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="5">
                 <TextBlock Text="其他参数：" Style="{StaticResource Text}" />
-                <ComboBox IsEditable="True" x:Name="OtherArg" VerticalAlignment="Center" Width="300" />
+                <ComboBox IsEditable="True" x:Name="OtherArg" VerticalAlignment="Center" Width="300" SelectionChanged="OtherArg_Change"/>
                 <TextBlock Text="输出格式：" Style="{StaticResource Text}"/>
-                <TextBox x:Name="OutFormat" Width="100" VerticalAlignment="Center"/>
+                <ComboBox x:Name="OutFormat" Width="100" VerticalAlignment="Center" IsEditable="True"/>
                 <Button Content="开始" Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Width="100" Click="RunTrans_Click"/>
             </StackPanel>
             <ListView x:Name="ListView" MinHeight="100" AllowDrop="True" DragEnter="fileListView_DragEnter" Drop="fileListView_Drop">

@@ -41,6 +41,12 @@
                         <TextBlock Text="音频转换" TextAlignment="Center"/>
                     </StackPanel>
                 </Button>
+                <Button Style="{StaticResource MenuButton}" Click="TextTrans_Click">
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="image/22.png" Width="40"/>
+                        <TextBlock Text="字幕转换" TextAlignment="Center"/>
+                    </StackPanel>
+                </Button>
                 <Button Style="{StaticResource MenuButton}" Click="OtherFormat_Click">
                     <StackPanel Orientation="Vertical">
                         <Image Source="image/21.png" Width="40"/>

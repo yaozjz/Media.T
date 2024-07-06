@@ -10,32 +10,6 @@
       Title="MusicTrans">
 
     <DockPanel Margin="10 0 10 0" Background="White" LastChildFill="True">
-
-        <Border BorderBrush="Gray" CornerRadius="10" BorderThickness="1" DockPanel.Dock="Top" Margin="5" Padding="5">
-            <StackPanel Orientation="Vertical">
-                <TextBlock Text="字幕转换工具" Style="{StaticResource Title}"/>
-                <TextBlock Text="lrc歌词文件仅支持转换为srt" Foreground="Red" Style="{StaticResource Text}"/>
-                <StackPanel Orientation="Horizontal" AllowDrop="True" DragEnter="vfFile_DragEnter" Drop="vfFile_Drop">
-                    <TextBlock Text="输入文件:" Style="{StaticResource Text}"/>
-                    <TextBox x:Name="InputFile" Width="500" VerticalAlignment="Center" />
-                    <Button Content="浏览" Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Width="100" Click="ViewFile_Click"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="输出文件名（默认输出源文件夹中）：" Style="{StaticResource Text}"/>
-                    <TextBox Text="output" VerticalAlignment="Center" x:Name="OutputName" Width="300"/>
-                    <ComboBox Name="VFFormat" Width="70" FontSize="14" FontFamily="YouYuan" VerticalAlignment="Center" Margin="10 0 10 0">
-                        <ComboBoxItem IsSelected="True">.srt</ComboBoxItem>
-                        <ComboBoxItem>.ass</ComboBoxItem>
-                    </ComboBox>
-                    <TextBlock Text="时间总长(单位：分)：" Style="{StaticResource Text}"/>
-                    <TextBox x:Name="TutalTime" Width="100" VerticalAlignment="Center" Text="6"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
-                    <Button Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Content="开始" Width="100" Click="Trans_Click" Height="30"/>
-                    <Button Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Content="打开目标文件夹" Width="150" Click="OpenOutFolder_Click" Height="30"/>
-                </StackPanel>
-            </StackPanel>
-        </Border>
         <TextBox IsReadOnly="True" DockPanel.Dock="Bottom" x:Name="logs" Height="100" TextChanged="LogsTextChange" VerticalScrollBarVisibility="Auto"/>
         <Border BorderThickness="1" BorderBrush="Gray" CornerRadius="10" Margin="5" Padding="5">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" >
@@ -73,8 +47,14 @@
                                 <Button Content="打开输出文件夹" Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Width="200" Click="OpenOutAudioFolder_Click"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="编码格式：" Style="{StaticResource Text}"/>
+                                <ComboBox x:Name="Encoder" Width="120" IsEditable="True" IsReadOnly="True" VerticalAlignment="Center"/>
+                                <TextBlock Text="采样率：" Style="{StaticResource Text}"/>
+                                <ComboBox x:Name="SampleRate" Width="120" IsEditable="True" IsReadOnly="True" VerticalAlignment="Center"/>
+                                <TextBlock Text="比特率：" Style="{StaticResource Text}"/>
+                                <ComboBox x:Name="BitRate" Width="120" IsEditable="True" IsReadOnly="True" VerticalAlignment="Center"/>
                                 <TextBlock Text="输出格式：" Style="{StaticResource Text}"/>
-                                <ComboBox x:Name="OutAudioFormat" Width="100" VerticalAlignment="Center"/>
+                                <ComboBox x:Name="OutAudioFormat" Width="100" VerticalAlignment="Center" IsEditable="True" IsReadOnly="True"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                 <Button Content="开始转换" Style="{StaticResource dgButton}" Template="{StaticResource buttonTemplate}" Width="100" Height="40" Click="TransAudio_Click"/>

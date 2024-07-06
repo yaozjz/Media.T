@@ -13,6 +13,7 @@ namespace Media.T.UI
     public partial class OtherFormat : Page
     {
         private ObservableCollection<data.StreamGrid> fileList = new ObservableCollection<data.StreamGrid>();
+
         void AddLogs(string msg)
         {
             Logs.AppendText(msg + '\r');
@@ -21,6 +22,7 @@ namespace Media.T.UI
         {
             InitializeComponent();
             ListView.ItemsSource = fileList;
+            OtherArg.ItemsSource = data.TransArg.otherArg;
         }
 
         private void LogsUpdate(object sender, TextChangedEventArgs e)
@@ -126,12 +128,26 @@ namespace Media.T.UI
             List<string> args = new List<string>();
             foreach (data.StreamGrid file in fileList)
             {
-                string path = System.IO.Path.GetDirectoryName(file.Name);
-                string out_name = "1-" + System.IO.Path.GetFileNameWithoutExtension(file.Name) + OutFormat.Text;
-                string arg = OpenFFmpeg.FormatTrans.GetSimpleTransArg(file.Name, System.IO.Path.Combine(path, out_name), OtherArg.Text);
+                string path = Path.GetDirectoryName(file.Name);
+                string out_name = "1-" + Path.GetFileNameWithoutExtension(file.Name) + OutFormat.Text;
+                string arg = OpenFFmpeg.FormatTrans.GetSimpleTransArg(file.Name, Path.Combine(path, out_name), OtherArg.Text);
                 args.Add(arg);
             }
             ffmpegUse.BatchRun(args, Logs);
+        }
+
+        private void OtherArg_Change(object sender, SelectionChangedEventArgs e)
+        {
+            if (OtherArg.SelectedIndex == 0)
+            {
+                OutFormat.ItemsSource = data.MediaFormat.AudioFormats;
+                OutFormat.SelectedIndex = 3;
+            }
+            else if (OtherArg.SelectedIndex == 1)
+            {
+                OutFormat.ItemsSource = data.MediaFormat.VideoFormats;
+                OutFormat.SelectedIndex = 0;
+            }
         }
     }
 }

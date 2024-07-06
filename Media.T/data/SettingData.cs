@@ -120,4 +120,16 @@ namespace Media.T.data
         public string VideoFormat { get; set; } = "";
         public string AudioFormat { get; set; } = "";
     }
+
+    public class TransArg
+    {
+        public static string[] otherArg = new string[] {
+            "-q:a 0 -map a -acodec copy",
+            "-c:v copy -an",
+        };
+        public static string[] Music_Format = new string[]
+        {
+            ".wav", ".mp3", ".aac", ".flac"
+        };
+    }
 }
