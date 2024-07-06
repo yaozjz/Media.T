@@ -14,18 +14,15 @@
             <TextBlock Text="请确认视频的命名与字幕文件命名一致（不包括后缀名），否则会导致视频合成失败(另：目前仅支持mkv格式)" Style="{StaticResource Text}" Foreground="Red"/>
             <StackPanel Orientation="Horizontal" Margin="5">
                 <TextBlock Text="视频输入文件夹：" Style="{StaticResource Text}"/>
-                <TextBox x:Name="InputPath" VerticalAlignment="Center" Width="400" Height="24"/>
+                <TextBox x:Name="InputPath" VerticalAlignment="Center" Width="400" Height="24" TextChanged="InputPath_change"/>
                 <Button Width="80" Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Click="ViewInputFolder">浏览</Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
                 <TextBlock Text="字幕输入文件夹：" Style="{StaticResource Text}"/>
-                <TextBox x:Name="SubTitilePath" VerticalAlignment="Center" Width="400" Height="24"/>
+                <TextBox x:Name="SubTitilePath" VerticalAlignment="Center" Width="400" Height="24" TextChanged="SubTitle_change"/>
                 <Button Width="80" Style="{StaticResource queButton}" Template="{StaticResource queButtonCtrl}" Click="ViewSubTitleFolder">浏览</Button>
                 <TextBlock Text="字幕格式：" Style="{StaticResource Text}"/>
-                <ComboBox Width="100" Height="24" x:Name="TitleFormat">
-                    <ComboBoxItem IsSelected="True">.ass</ComboBoxItem>
-                    <ComboBoxItem>.srt</ComboBoxItem>
-                </ComboBox>
+                <ComboBox Width="100" Height="24" x:Name="TitleFormat" SelectionChanged="SubtitleSelectChange"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
                 <TextBlock Text="视频输出文件夹：" Style="{StaticResource Text}"/>

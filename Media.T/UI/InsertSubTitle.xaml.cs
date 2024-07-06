@@ -1,8 +1,10 @@
-﻿using Media.T.Until;
+﻿using Media.T.data;
+using Media.T.Until;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Markup;
 
 namespace Media.T.UI
 {
@@ -43,23 +45,27 @@ namespace Media.T.UI
         /// </summary>
         private void FreshVedeo()
         {
-            if (InputPath.Text != string.Empty)
+            string now_path = InputPath.Text.Trim();
+            if (Directory.Exists(now_path))
             {
-                FreshList(VideoItems, InputPath.Text.Trim(), @"(.*)\.mkv");
+                //是否存在该目录，如果存在则检索
+                FreshList(VideoItems, now_path, @"(.*)\.mkv");
                 SortListView(VideoItems);
             }
+            
         }
         /// <summary>
         /// 字幕列表刷新
         /// </summary>
         private void FreshSubtitle()
         {
-            
-            if (SubTitilePath.Text != string.Empty)
+            string subtitle_path = SubTitilePath.Text.Trim();
+            if (Directory.Exists(subtitle_path))
             {
-                FreshList(SubTitleItems, SubTitilePath.Text.Trim(), @"(.*)\" + TitleFormat.Text);
+                 
+                FreshList(SubTitleItems, subtitle_path, @"(.*)\" + TitleFormat.Text);
                 SortListView(SubTitleItems);
-            }
+            }                
         }
         private void SortListView(ObservableCollection<string> FileItems)
         {
@@ -82,6 +88,7 @@ namespace Media.T.UI
             SubTitilePath.Text = data.Configs.data.subTitle.SubTitlePath;
             VideoList.ItemsSource = VideoItems;
             SubtitleList.ItemsSource = SubTitleItems;
+            TitleFormat.ItemsSource = MediaFormat.SubTitleFormat;
             FreshVedeo();
             FreshSubtitle();
         }
@@ -168,6 +175,25 @@ namespace Media.T.UI
         }
 
         private void SubtitleSelectChange(object sender, SelectionChangedEventArgs e)
+        {
+            FreshSubtitle();
+        }
+
+        /// <summary>
+        /// 输入框字体发生改变
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void InputPath_change(object sender, TextChangedEventArgs e)
+        {
+            FreshVedeo();
+        }
+        /// <summary>
+        /// 输入的字幕路径发生变化
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SubTitle_change(object sender, TextChangedEventArgs e)
         {
             FreshSubtitle();
         }

@@ -22,5 +22,7 @@ namespace Media.T.data
         {
             ".lrc", ".srt", ".ass"
         };
+
+        static public List<string> SubTitleFormat { get; private set; } = new List<string>() { ".ass", ".srt" };
     }
 }
