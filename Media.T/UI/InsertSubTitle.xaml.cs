@@ -89,6 +89,7 @@ namespace Media.T.UI
             VideoList.ItemsSource = VideoItems;
             SubtitleList.ItemsSource = SubTitleItems;
             TitleFormat.ItemsSource = MediaFormat.SubTitleFormat;
+            TitleFormat.SelectedIndex = 0;
             FreshVedeo();
             FreshSubtitle();
         }
